@@ -165,19 +165,6 @@ class JavaDiffObjectsView extends HeapView {
         }
         
         status = new ProgressNode(Bundle.JavaDiffObjectsView_LoadingProgress());
-        new RequestProcessor("Compare Heap Dumps Worker").post(new Runnable() { // NOI18N
-            public void run() {
-                computeDiffClasses(heap, compareRetained);
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        ((HideableBarRenderer)countC.getRenderer()).setMaxValue(maxDiffCount);
-                        ((HideableBarRenderer)sizeC.getRenderer()).setMaxValue(maxDiffSize);
-                        if (compareRetained) ((HideableBarRenderer)retainedC.getRenderer()).setMaxValue(maxDiffRetained);
-                        if (objectsView != null) objectsView.getComponent().repaint();
-                    }
-                });
-            }
-        });
         
         objectsView = new PluggableTreeTableView("diff_java_objects", context1, actions, columns) { // NOI18N
             protected HeapViewerNode[] computeData(RootNode root, Heap heap, String viewID, HeapViewerNodeFilter viewFilter, List<DataType> dataTypes, List<SortOrder> sortOrders, Progress progress) throws InterruptedException {
@@ -218,6 +205,20 @@ class JavaDiffObjectsView extends HeapView {
             }
         };
         objectsView.setViewName(Bundle.JavaDiffObjectsView_Name());
+
+        new RequestProcessor("Compare Heap Dumps Worker").post(new Runnable() { // NOI18N
+            public void run() {
+                computeDiffClasses(heap, compareRetained);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        ((HideableBarRenderer)countC.getRenderer()).setMaxValue(maxDiffCount);
+                        ((HideableBarRenderer)sizeC.getRenderer()).setMaxValue(maxDiffSize);
+                        if (compareRetained) ((HideableBarRenderer)retainedC.getRenderer()).setMaxValue(maxDiffRetained);
+                        if (objectsView != null) objectsView.getComponent().repaint();
+                    }
+                });
+            }
+        });
     }
     
 
