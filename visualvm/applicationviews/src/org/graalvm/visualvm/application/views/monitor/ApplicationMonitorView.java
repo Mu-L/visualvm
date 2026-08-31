@@ -792,10 +792,10 @@ class ApplicationMonitorView extends DataSourceView {
                 long prevUpTime = model.getPrevUpTime();
 
                 if (prevUpTime == -1) return;
-
+                long upTimeDiff = upTime - prevUpTime;
+                if (upTimeDiff == 0) return;
                 long allBytes = model.getTotalThreadsAllocatedBytes();
                 long prevAllBytes = model.getPrevTotalThreadsAllocatedBytes();
-                long upTimeDiff = upTime - prevUpTime;
                 long allBytesPerSecond = (1000*(allBytes-prevAllBytes))/upTimeDiff;
 
                 if (liveModel)
